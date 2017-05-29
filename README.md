@@ -5,7 +5,7 @@ This project is made for emcgsm.nl, a webshop made in OpenCart. This module allo
 A list of files that were edited
 1. vqmod/xml/exportstock.xml
 2. admin\view\template\catalog\category_list.tpl
-3. system\storage\modification\admin\view\template\catalog\product.tpl
+3. system\storage\modification\admin\view\template\catalog\product_form.tpl
 
 And also 
 

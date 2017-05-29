@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+  	<id>Pincode Security on Quantity</id>         
+    <version>1.0</version>         
+    <vqmver>2.x</vqmver>         
+    <author>Nooijen Web Solutions</author>
+	
+	<file name="admin/language/en-gb/catalog/product.php">	
+		<operation error="skip">
+			<search position="after" ><![CDATA[$_['error_keyword']          = 'SEO URL already in use!';]]></search>
+			<add><![CDATA[
+			//Pincode
+			$_['entry_pincode']         = 'Pin';
+			$_['error_epincode']         = 'Please enter Pincode';
+			$_['error_pincode']          = 'Pincode Incorrect';
+			//Pincode
+			]]></add>
+		</operation>
+	</file>
+
+
+	<file name="admin/controller/catalog/product.php">
+	
+	<operation error="skip">
+			 <search position="replace" ><![CDATA[$data['quantity'] = 1;]]></search>
+			<add><![CDATA[
+			//Pincode
+			$data['quantity'] = 0;
+			//Pincode
+			]]></add>
+		</operation>
+		<operation error="skip">
+			 <search position="after" index="2" ><![CDATA[$data['entry_quantity'] = $this->language->get('entry_quantity');]]></search>
+			<add><![CDATA[
+		//Pincode
+		$data['entry_pincode'] = $this->language->get('entry_pincode');
+		if (isset($this->error['pincode'])) {
+			$data['error_pincode'] = $this->error['pincode'];
+		} else {
+			$data['error_pincode'] = '';
+		}
+			if (isset($this->request->post['pincode'])) {
+			$data['pincode'] =$this->request->post['pincode'];
+			}
+			else
+			{
+			$data['pincode'] ='';
+			}
+		//Pincode]]></add>
+		</operation>
+		<operation error="skip">
+			 <search position="before" ><![CDATA[if ($this->error && !isset($this->error['warning'])) {]]></search>
+			<add><![CDATA[//Pincode
+        $secure_pincode = 0000;
+		if(isset($this->request->post['quantity']))
+		{
+			$stock_qty_new=$this->request->post['quantity'];
+			
+			if(isset($this->request->get['product_id']))
+			{
+				$product_info = $this->model_catalog_product->getProduct($this->request->get['product_id']);
+			
+					if(isset($product_info['quantity']))
+					{
+						$stock_qty_old=$product_info['quantity'];
+						if($stock_qty_new != $stock_qty_old) 
+						{			
+								if(!empty($this->request->post['pincode']))
+								{	
+									if ($secure_pincode == $this->request->post['pincode']) 
+									{
+										//update stock
+										$this->db->query("UPDATE " . DB_PREFIX . "product SET quantity = '" . $stock_qty_new . "' WHERE product_id = '" . (int)$this->request->get['product_id'] . "'");
+										//update stock
+									}
+									else
+									{
+										$this->error['pincode'] = $this->language->get('error_pincode');
+									}
+								
+								}
+								else
+								{
+									$this->error['pincode'] = $this->language->get('error_epincode');
+								}	
+						}
+					}
+				}
+				else
+				{
+					if($this->request->post['quantity']>0)
+					{	
+						
+						if(!empty($this->request->post['pincode']))
+						{
+									if ($secure_pincode != $this->request->post['pincode']) 
+									{
+										$this->error['pincode'] = $this->language->get('error_pincode');	
+									}
+						}	
+						else
+						{
+								$this->error['pincode'] = $this->language->get('error_epincode');
+						}	
+				
+					}
+				}	
+		
+		}
+		//Pincode]]></add>
+		</operation>
+	</file>
+	
+	<file name="admin/model/catalog/product.php">
+		
+		<operation error="skip">
+			 <search position="replace" index="1"><![CDATA[$this->db->query("UPDATE " . DB_PREFIX . "product SET model = '" . $this->db->escape($data['model']) . "', sku = '" . $this->db->escape($data['sku']) . "', upc = '" . $this->db->escape($data['upc']) . "', ean = '" . $this->db->escape($data['ean']) . "', jan = '" . $this->db->escape($data['jan']) . "', isbn = '" . $this->db->escape($data['isbn']) . "', mpn = '" . $this->db->escape($data['mpn']) . "', location = '" . $this->db->escape($data['location']) . "', quantity = '" . (int)$data['quantity'] . "', minimum = '" . (int)$data['minimum'] . "', subtract = '" . (int)$data['subtract'] . "', stock_status_id = '" . (int)$data['stock_status_id'] . "', date_available = '" . $this->db->escape($data['date_available']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "', points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "', weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$data['length'] . "', width = '" . (float)$data['width'] . "', height = '" . (float)$data['height'] . "', length_class_id = '" . (int)$data['length_class_id'] . "', status = '" . (int)$data['status'] . "', tax_class_id = '" . (int)$data['tax_class_id'] . "', sort_order = '" . (int)$data['sort_order'] . "', date_modified = NOW() WHERE product_id = '" . (int)$product_id . "'");]]></search>
+			<add><![CDATA[
+			//Pincode
+			$this->db->query("UPDATE " . DB_PREFIX . "product SET model = '" . $this->db->escape($data['model']) . "', sku = '" . $this->db->escape($data['sku']) . "', upc = '" . $this->db->escape($data['upc']) . "', ean = '" . $this->db->escape($data['ean']) . "', jan = '" . $this->db->escape($data['jan']) . "', isbn = '" . $this->db->escape($data['isbn']) . "', mpn = '" . $this->db->escape($data['mpn']) . "', location = '" . $this->db->escape($data['location']) . "', minimum = '" . (int)$data['minimum'] . "', subtract = '" . (int)$data['subtract'] . "', stock_status_id = '" . (int)$data['stock_status_id'] . "', date_available = '" . $this->db->escape($data['date_available']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "', points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "', weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$data['length'] . "', width = '" . (float)$data['width'] . "', height = '" . (float)$data['height'] . "', length_class_id = '" . (int)$data['length_class_id'] . "', status = '" . (int)$data['status'] . "', tax_class_id = '" . (int)$data['tax_class_id'] . "', sort_order = '" . (int)$data['sort_order'] . "', date_modified = NOW() WHERE product_id = '" . (int)$product_id . "'");
+			//Pincode]]></add>
+		</operation>
+		
+	</file>
+	<file name="admin/view/template/catalog/product_form.tpl">	
+	
+	<operation error="skip">
+			 <search position="replace"  index="17"><![CDATA[<div class="col-sm-10">]]>
+			 </search>
+	<add><![CDATA[
+	<div class="col-sm-6">
+	]]></add>
+		</operation>
+	
+	
+		<operation error="skip">
+			 <search position="replace" ><![CDATA[<input type="text" name="quantity" value="<?php echo $quantity; ?>" placeholder="<?php echo $entry_quantity; ?>" id="input-quantity" class="form-control" />]]>
+			 </search>
+			<add><![CDATA[
+			  <input type="text" name="quantity" value="<?php echo $quantity; ?>" placeholder="<?php echo $entry_quantity; ?>" id="input-quantity" class="form-control" />
+			  </div>
+			  <!--Pincode-->
+				<div class="col-sm-4">
+				<div class="row required">
+				 <label class="col-sm-2 control-label" for="input-pincode"><?php echo $entry_pincode; ?></label>
+				 <div class="col-sm-10">
+				 <input type="password" name="pincode" value="<?php echo $pincode; ?>" placeholder="<?php echo $entry_pincode; ?>" id="input-pincode" class="form-control" />
+				 <?php if ($error_pincode) { ?>
+                  <div class="text-danger"><?php echo $error_pincode; ?></div>
+                  <?php } ?>
+				 </div>
+				</div>
+				<!--Pincode-->
+				]]></add>
+		</operation>
+	
+	</file>
+</modification>

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+  	<id>Export stock By Category</id>         
+    <version>1.0</version>         
+    <vqmver>2.x</vqmver>         
+    <author>Nooijen Web Solutions</author>
+	
+	<file name="admin/language/en-gb/catalog/category.php">	
+		<operation error="skip">
+			<search position="after" ><![CDATA[$_['entry_layout']           = 'Layout Override';]]></search>
+			<add><![CDATA[
+			//export order
+			$_['entry_export_order']      = 'Export stock';
+			$_['entry_productcode1']         = 'OND';
+			$_['entry_productcode2']         = 'LCD';
+			$_['entry_productcode3']         = 'ACC';
+			$_['entry_productcode4']         = 'TOO';
+			//export order
+			]]></add>
+		</operation>
+	</file>
+
+
+	<file name="admin/controller/catalog/category.php">
+	
+	<operation error="skip">
+			 <search position="before" ><![CDATA[$data['add'] = $this->url->link('catalog/category/add', 'token=' . $this->session->data['token'] . $url, true);]]></search>
+			<add><![CDATA[
+			//export order
+			$data['entry_export_order'] = $this->language->get('entry_export_order');
+			
+			$data['entry_productcode1'] = $this->language->get('entry_productcode1');
+			$data['entry_productcode2'] = $this->language->get('entry_productcode2');
+			$data['entry_productcode3'] = $this->language->get('entry_productcode3');
+			$data['entry_productcode4'] = $this->language->get('entry_productcode4');
+			
+			$data['productcode1']=$this->url->link('catalog/category/exportstock', 'token=' . $this->session->data['token'] . '&product_code=OND'. $url, true);
+			$data['productcode2']=$this->url->link('catalog/category/exportstock', 'token=' . $this->session->data['token'] . '&product_code=LCD'. $url, true);
+			$data['productcode3']=$this->url->link('catalog/category/exportstock', 'token=' . $this->session->data['token'] . '&product_code=ACC'. $url, true);
+			$data['productcode4']=$this->url->link('catalog/category/exportstock', 'token=' . $this->session->data['token'] . '&product_code=TOO'. $url, true);
+				//export order	
+			]]></add>
+		</operation>
+		<operation error="skip">
+			 <search position="before" ><![CDATA[protected function validateForm() {]]></search>
+			<add><![CDATA[
+			//export order	
+		public	function  exportstock()
+		{
+		
+			if(isset($this->request->get['product_code']))
+			{
+				$product_code=$this->request->get['product_code'];
+				$this->load->model('catalog/product');
+				$filter_data = array(
+					'filter_model'	  => $product_code.'-',
+					'sort'            => 'p.model',
+					'order'			=> 'ASC'
+				);	
+				
+			
+				
+				$results = $this->model_catalog_product->getProducts($filter_data);
+				
+				//for csv
+				header('Content-Type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename='.$product_code.'-data.csv');
+				$output = fopen('php://output', 'w');
+				// output the column headings
+				fputcsv($output, array('Product code', 'Product name', 'Stock'));
+				
+				
+				
+				//for csv
+				if($results)
+				{	
+					
+					foreach($results as $result)
+					{
+						$product_code=$result['model'];
+						$name=$result['name'];
+						$quantity=$result['quantity'];
+						$row=array();
+						$row=array($product_code,$name,$quantity);
+						fputcsv($output, $row);  
+					}
+				
+				}
+               
+				die;
+			}
+		}		
+			//export order	
+			]]></add>
+		</operation>
+	</file>
+	
+	
+	
+	<file name="admin/language/en-gb/catalog/product.php">	
+		<operation error="skip">
+			<search position="after" ><![CDATA[$_['entry_recurring']        = 'Recurring Profile';]]></search>
+			<add><![CDATA[
+			//export order
+			$_['entry_category']     		 = '---Category---';
+			$_['error_productcode']     		 = 'Product Code already Exists';
+			//export order
+			]]></add>
+		</operation>
+	</file>
+	
+	
+
+		<file name="admin/controller/catalog/product.php">
+	
+				<operation error="skip">
+			 <search position="after" ><![CDATA[$this->load->model('localisation/length_class');]]></search>
+			<add><![CDATA[
+			$data['entry_category'] = $this->language->get('entry_category');
+			if (isset($this->request->post['productcode_category'])) {
+			$data['productcode_category'] = $this->request->post['productcode_category'];
+			} elseif (!empty($product_info)) {
+				$rr=explode('-',$product_info['model']);
+				$data['productcode_category'] = $rr[0];
+			} else {
+				$data['productcode_category'] = '';
+			}
+			
+		]]></add>
+		</operation>
+		
+		
+		
+			<operation error="skip">
+			 <search position="before" ><![CDATA[if (isset($this->error['keyword'])) {]]></search>
+			<add><![CDATA[
+			if (isset($this->error['productcode'])) {
+			$data['error_model'] = $this->error['productcode'];
+		} else {
+			$data['error_model'] = '';
+		}
+			
+		]]></add>
+		</operation>
+		
+			<operation error="skip">
+			 <search position="before" ><![CDATA[if (utf8_strlen($this->request->post['keyword']) > 0) {]]></search>
+			<add><![CDATA[
+			
+			if (utf8_strlen($this->request->post['model']) > 0) {
+			$model=$this->request->post['model'];
+			$res=$this->db->query("select model from " . DB_PREFIX . "product where  model ='" . $model. "'");
+			
+			if(!isset($this->request->get['product_id']) && $res->num_rows>0)
+			{		
+				$this->error['productcode'] = sprintf($this->language->get('error_productcode'));	
+			}
+			else
+			{
+					$ress=$this->db->query("select model from " . DB_PREFIX . "product where  product_id ='" . $this->request->get['product_id']. "'");
+					$resul=$ress->row;
+					$models=$resul['model'];
+					if($models!=$this->request->post['model'])
+					{
+						
+						$resss=$this->db->query("select model from " . DB_PREFIX . "product where  model ='" . $this->request->post['model']. "'");
+						if($resss->num_rows>0)
+						{
+						$this->error['productcode'] = sprintf($this->language->get('error_productcode'));	
+						}
+					
+					
+					}	
+					
+			}
+		}	
+			
+		]]></add>
+			</operation>
+		
+		
+		
+		<operation error="skip">
+			 <search position="before" ><![CDATA[public function autocomplete() {]]></search>
+			<add><![CDATA[
+			public function generatecode()
+			{
+				$json = array();
+
+				if(isset($this->request->get['category']))
+				{
+					$category=$this->request->get['category'];
+					$res=$this->db->query("select model from " . DB_PREFIX . "product where  model LIKE '" . $category . "-%'");
+					if($res->num_rows>0)
+					{
+							$finalArr=array();
+							$max=0;
+							foreach($res->rows as $num)
+							{
+								$res=explode('-',$num['model']);
+								$finalArr[]=$res[1];
+							}
+							if(count($finalArr)>0)
+							{
+							
+								$max=max($finalArr)+1;
+								$max=sprintf("%04d", $max);
+								$json['code']=$category.'-'.($max); 
+								
+							}
+							else
+							{
+								$max=sprintf("%04d", $max);
+								$json['code']=$category.'-'.($max+1); 
+							}
+							
+					
+					}
+					else
+					{
+					$max=sprintf("%04d", 1);
+					$json['code']=$category.'-'.$max; 
+					}
+				}
+				
+					$this->response->addHeader('Content-Type: application/json');
+					$this->response->setOutput(json_encode($json));
+			}
+		]]></add>
+		</operation>
+		
+		
+		
+		
+	</file>
+
+
+	<file name="admin/view/template/catalog/product_form.tpl">	
+		<operation error="skip">
+			<search position="before"  ><![CDATA[<div class="col-sm-8">]]></search>
+			<add><![CDATA[
+			<input type="hidden" id="productcode" name="productcode" value="<?php echo $model; ?>">
+			<!-- export order -->
+			 <div class="col-sm-2">
+			 <select name="productcode_category" id="productcode_category" class="form-control" onchange="createProductCode(this.value);">
+			 <option value=""><?php echo $entry_category;?></option>
+             <option value="OND" <?php if($productcode_category=='OND'){?>selected="selected" <?php } ?>>Onderdelen</option>
+			 <option value="LCD" <?php if($productcode_category=='LCD'){?>selected="selected" <?php } ?>>LCD's</option>
+			 <option value="ACC" <?php if($productcode_category=='ACC'){?>selected="selected" <?php } ?>>Accessoires</option>
+			 <option value="TOO" <?php if($productcode_category=='TOO'){?>selected="selected" <?php } ?>>Tools</option>
+			 </select>   
+			   
+			 </div>
+			<!-- export order -->
+			]]></add>
+		</operation>
+		
+		
+			<operation error="skip">
+			<search position="after"  ><![CDATA[<?php echo $footer; ?>]]></search>
+			<add><![CDATA[
+			<script language="javascript">
+			function createProductCode(category)
+			{
+				if(category!='')
+				{
+					//call ajax
+							$.ajax({
+							url: 'index.php?route=catalog/product/generatecode&token=<?php echo $token; ?>&category=' +  category,
+							dataType: 'json',
+							success: function(json) {
+								if(json['code'])
+								{
+									$('#input-model').val(json['code']);
+								}
+							}
+						});			
+				
+					//call ajax
+				}
+				else
+				{
+					$('#input-model').val($('#productcode').val());
+				}
+			}
+			</script>
+			]]></add>
+			</operation>
+		
+		
+	</file>
+	
+	
+</modification>

@@ -2,7 +2,17 @@
 <div id="content">
   <div class="page-header">
     <div class="container-fluid">
-      <div class="pull-right"><a href="<?php echo $add; ?>" data-toggle="tooltip" title="<?php echo $button_add; ?>" class="btn btn-primary"><i class="fa fa-plus"></i></a> <a href="<?php echo $repair; ?>" data-toggle="tooltip" title="<?php echo $button_rebuild; ?>" class="btn btn-default"><i class="fa fa-refresh"></i></a>
+      <div class="pull-right"> 
+          
+        <!-- export order-->
+        <span style="font-size:font-size: 14px;font-weight: bold;"><?php echo $entry_export_order;?> :</span>
+        <a href="<?php echo $productcode1; ?>" data-toggle="tooltip" title="<?php echo $entry_productcode1; ?>" class="btn btn-default"><?php echo $entry_productcode1; ?></a>
+        <a href="<?php echo $productcode2; ?>" data-toggle="tooltip" title="<?php echo $entry_productcode2; ?>" class="btn btn-default"><?php echo $entry_productcode2; ?></a>
+        <a href="<?php echo $productcode3; ?>" data-toggle="tooltip" title="<?php echo $entry_productcode3; ?>" class="btn btn-default"><?php echo $entry_productcode3; ?></a>
+        <a href="<?php echo $productcode4; ?>" data-toggle="tooltip" title="<?php echo $entry_productcode4; ?>" class="btn btn-default"><?php echo $entry_productcode4; ?></a>
+        <!-- export order-->
+          
+          <a href="<?php echo $add; ?>" data-toggle="tooltip" title="<?php echo $button_add; ?>" class="btn btn-primary" style="margin-left: 20px;"><i class="fa fa-plus"></i></a> <a href="<?php echo $repair; ?>" data-toggle="tooltip" title="<?php echo $button_rebuild; ?>" class="btn btn-default"><i class="fa fa-refresh"></i></a>
         <button type="button" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger" onclick="confirm('<?php echo $text_confirm; ?>') ? $('#form-category').submit() : false;"><i class="fa fa-trash-o"></i></button>
       </div>
       <h1><?php echo $heading_title; ?></h1>

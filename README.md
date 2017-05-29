@@ -8,6 +8,7 @@ A list of files that were edited
 3. system\storage\modification\admin\view\template\catalog\product.tpl
 
 And also 
+
 4. vqmod/xml/pincode.xml
 
 # Contact

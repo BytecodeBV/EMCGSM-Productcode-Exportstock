@@ -10,6 +10,8 @@
         <a href="<?php echo $productcode2; ?>" data-toggle="tooltip" title="<?php echo $entry_productcode2; ?>" class="btn btn-default"><?php echo $entry_productcode2; ?></a>
         <a href="<?php echo $productcode3; ?>" data-toggle="tooltip" title="<?php echo $entry_productcode3; ?>" class="btn btn-default"><?php echo $entry_productcode3; ?></a>
         <a href="<?php echo $productcode4; ?>" data-toggle="tooltip" title="<?php echo $entry_productcode4; ?>" class="btn btn-default"><?php echo $entry_productcode4; ?></a>
+        <a href="<?php echo $productcode5; ?>" data-toggle="tooltip" title="<?php echo $entry_productcode5; ?>" class="btn btn-default"><?php echo $entry_productcode5; ?></a>
+        <a href="<?php echo $productcode6; ?>" data-toggle="tooltip" title="<?php echo $entry_productcode6; ?>" class="btn btn-default"><?php echo $entry_productcode6; ?></a>
         <!-- export order-->
           
           <a href="<?php echo $add; ?>" data-toggle="tooltip" title="<?php echo $button_add; ?>" class="btn btn-primary" style="margin-left: 20px;"><i class="fa fa-plus"></i></a> <a href="<?php echo $repair; ?>" data-toggle="tooltip" title="<?php echo $button_rebuild; ?>" class="btn btn-default"><i class="fa fa-refresh"></i></a>
